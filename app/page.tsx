@@ -1,67 +1,60 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { getProducts } from "@/lib/data";
+import { getProducts, getArticles } from "@/lib/data";
 import ProductCard from "@/components/ProductCard";
+import ArticleCard from "@/components/ArticleCard";
 import AdSlot from "@/components/AdSlot";
 
-const uses = ["all", "running", "trail", "everyday", "casual", "hiking"];
-
-export default function ShopPage() {
-  const products = getProducts();
-  const [filter, setFilter] = useState("all");
-
-  const filtered =
-    filter === "all"
-      ? products
-      : products.filter((p) => p.use === filter || p.tags.includes(filter));
+export default function HomePage() {
+  const products = getProducts().slice(0, 4);
+  const articles = getArticles().slice(0, 3);
 
   return (
-    <div className="page">
-      <span className="section-label">The Collection</span>
-      <h1 className="section-title">Barefoot Shoe Shop</h1>
-
-      <div style={{ background: "#fff8e8", border: "1px solid #e0d0b0", borderRadius: "4px", padding: "1rem 1.5rem", marginBottom: "2.5rem" }}>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.15em", color: "#9b8c7e", textTransform: "uppercase" }}>
-          🚧 Shop launching soon — Stripe checkout coming Q2 2025
-        </span>
+    <>
+      <div className="hero">
+        <div className="hero-inner">
+          <span className="hero-eyebrow">🦶 The Barefoot Shoe Guide</span>
+          <h1>Find Your<br /><em>Perfect</em> Barefoot Shoe</h1>
+          <p>Navigate the world of zero-drop, wide toe-box footwear with personalized recommendations and expert guides.</p>
+          <div className="hero-ctas">
+            <Link href="/quiz" className="btn-primary">Take the Quiz →</Link>
+            <Link href="/articles" className="btn-secondary">Read the Guides</Link>
+          </div>
+        </div>
       </div>
 
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "2rem" }}>
-        {uses.map((u) => (
-          <button
-            key={u}
-            onClick={() => setFilter(u)}
-            style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: "0.7rem",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              padding: "0.45rem 1rem",
-              border: `1px solid ${filter === u ? "#8b6f47" : "#e0d8cc"}`,
-              background: filter === u ? "#8b6f47" : "white",
-              color: filter === u ? "#f5f0e8" : "#9b8c7e",
-              borderRadius: "2px",
-              cursor: "pointer",
-              transition: "all 0.15s",
-            }}
-          >
-            {u === "all" ? "All" : u}
-          </button>
-        ))}
-      </div>
+      <div className="page">
+        <div className="feature-strip">
+          {[
+            { icon: "🎯", title: "Personalized Quiz", desc: "Answer 3 questions. Get 3 perfect matches." },
+            { icon: "📚", title: "Expert Guides", desc: "Evidence-based transition guides & reviews." },
+            { icon: "🏪", title: "Curated Shop", desc: "Hand-picked barefoot brands, vetted by us." },
+            { icon: "🌿", title: "Honest Reviews", desc: "No sponsored content. Ever. Just the truth." },
+          ].map((f) => (
+            <div key={f.title} className="feature-item">
+              <div className="icon">{f.icon}</div>
+              <h3>{f.title}</h3>
+              <p>{f.desc}</p>
+            </div>
+          ))}
+        </div>
 
-      <div className="product-grid">
-        {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
-      </div>
+        <span className="section-label">Featured Shoes</span>
+        <h2 className="section-title">Top Picks Right Now</h2>
+        <div className="product-grid">
+          {products.map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+        <div style={{ textAlign: "center", marginTop: "2rem" }}>
+          <Link href="/shop" className="btn-secondary">View All Shoes</Link>
+        </div>
 
-      <AdSlot label="Affiliate Links — Disclosure: We earn a commission" />
+        <AdSlot />
 
-      <div style={{ textAlign: "center", padding: "2rem 0" }}>
-        <p style={{ color: "#9b8c7e", marginBottom: "1rem", fontSize: "0.9rem" }}>Not sure what to choose?</p>
-        <Link href="/quiz" className="btn-primary">Take the Recommender Quiz</Link>
+        <span className="section-label" style={{ marginTop: "3rem", display: "block" }}>From the Blog</span>
+        <h2 className="section-title">Learn Before You Buy</h2>
+        <div className="article-grid">
+          {articles.map((a) => <ArticleCard key={a.slug} article={a} />)}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
